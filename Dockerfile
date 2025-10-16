@@ -1,34 +1,21 @@
-# =============================
-# 1️⃣ Builder Stage (installs deps)
-# =============================
-FROM python:3.12-slim AS builder
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy dependencies
+# Copy dependencies and install
 COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# =============================
-# 2️⃣ Final Stage (runtime only)
-# =============================
-FROM python:3.12-alpine
+# Copy your FastAPI app source
+COPY post.py .
 
-WORKDIR /app
-
-# Copy only installed packages (from builder)
-COPY --from=builder /root/.local /root/.local
-
-# Copy app source code
-COPY . .
-
-# Set PATH so installed packages are found
-ENV PATH=/root/.local/bin:$PATH
-
-# Use non-root user (security best practice)
-RUN adduser -D appuser
+# Create and switch to non-root user
+RUN adduser --disabled-password --gecos "" appuser
 USER appuser
 
+# Expose the FastAPI port
 EXPOSE 8000
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Start FastAPI with uvicorn
+CMD ["uvicorn", "post:app", "--host", "0.0.0.0", "--port", "8000"]
 
