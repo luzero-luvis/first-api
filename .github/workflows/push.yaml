@@ -1,8 +1,9 @@
 name: ci for build and pushing the docker image
 description: This workflow is used to build and push the docker image.
 on:
-  workflow_call:
-env:
+  push:
+    branches:
+      - main
   DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKERHUB_KEY: ${{ secrets.DOCKER_PASSWORD }}
 jobs:
