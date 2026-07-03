@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKERHUB_KEY: ${{ secrets.DOCKER_PASSWORD }}
 jobs:
@@ -36,9 +37,9 @@ jobs:
           chmod 600 /tmp/id_rsa
       - name: Login to SSDNodes server
         run: |
-          ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa ${{ secrets.BETA_SERVER_USERNAME }}@${{ secrets.BETA_SERVER_IP}} -p 61001'
-            CONTAINER_ID=$(docker ps -aq --filter name=fastapi) 
-          IMAGE_NAME=${{ env.DOCKERHUB_USERNAME }}/fastapi:dev
+          ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa ${{ secrets.BETA_SERVER_USERNAME }}@${{ secrets.BETA_SERVER_IP}} -p 61001 '
+            CONTAINER_ID=$(docker ps -aq --filter name=fastapi)
+            IMAGE_NAME=${{ env.DOCKERHUB_USERNAME }}/fastapi:dev
             echo "${{ env.DOCKERHUB_KEY }}" | docker login -u "${{ env.DOCKERHUB_USERNAME }}" --password-stdin
             docker pull $IMAGE_NAME
             if [ -n "$CONTAINER_ID" ]; then
