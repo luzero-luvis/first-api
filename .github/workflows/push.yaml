@@ -45,10 +45,10 @@ jobs:
             if [ -n "$CONTAINER_ID" ]; then
             docker stop $CONTAINER_ID && docker rm $CONTAINER_ID
             fi
-            docker run -d -p 8000:8000 --restart=unless-stopped --env-file=.env --name=fastapi $IMAGE_NAME
+            docker run -d -p 8000:8000 --restart=unless-stopped --name=fastapi $IMAGE_NAME
             sleep 30 && docker logs fastapi
           '
-      - name: Remove SSH key and .env
+      - name: Remove SSH key
         if: always()
         run: |
           rm -f /tmp/id_rsa
